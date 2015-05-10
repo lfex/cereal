@@ -49,3 +49,10 @@ Then you can check for a response:
 Shell got {data,<<136,82,78,74,2,139>>}
 ok
 ```
+
+When you're finished, be sure to stop cereal (in order to prevent memory leaks):
+
+```cl
+> (cereal:stop tty)
+#(stop)
+```
