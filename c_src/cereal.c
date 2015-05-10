@@ -129,24 +129,24 @@ set_raw_tty_mode(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
   ttymodes.c_cc[VTIME] = 0;        /* do not wait to fill buffer */
 
   ttymodes.c_iflag &= ~(ICRNL |    /* disable CR-to-NL mapping */
-			INLCR |    /* disable NL-to-CR mapping */
-			IGNCR |    /* disable ignore CR */
-			ISTRIP |   /* disable stripping of eighth bit */
-			IXON |     /* disable output flow control */
-			BRKINT |   /* disable generate SIGINT on brk */
-			IGNPAR |
-			PARMRK |
-			IGNBRK |
-			INPCK);    /* disable input parity detection */
+      INLCR |    /* disable NL-to-CR mapping */
+      IGNCR |    /* disable ignore CR */
+      ISTRIP |   /* disable stripping of eighth bit */
+      IXON |     /* disable output flow control */
+      BRKINT |   /* disable generate SIGINT on brk */
+      IGNPAR |
+      PARMRK |
+      IGNBRK |
+      INPCK);    /* disable input parity detection */
 
   ttymodes.c_lflag &= ~(ICANON |   /* enable non-canonical mode */
-			ECHO |     /* disable character echo */
-			ECHOE |    /* disable visual erase */
-			ECHOK |    /* disable echo newline after kill */
-			ECHOKE |   /* disable visual kill with bs-sp-bs */
-			ECHONL |   /* disable echo nl when echo off */
-			ISIG | 	   /* disable tty-generated signals */
-			IEXTEN);   /* disable extended input processing */
+      ECHO |     /* disable character echo */
+      ECHOE |    /* disable visual erase */
+      ECHOK |    /* disable echo newline after kill */
+      ECHOKE |   /* disable visual kill with bs-sp-bs */
+      ECHONL |   /* disable echo nl when echo off */
+      ISIG |     /* disable tty-generated signals */
+      IEXTEN);   /* disable extended input processing */
 
   ttymodes.c_cflag |= CS8;         /* enable eight bit chars */
   ttymodes.c_cflag &= ~PARENB;     /* disable input parity check */
@@ -338,11 +338,11 @@ close_tty(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ErlNifFunc nif_funcs[] = {
-  {"open_tty", 1, open_tty},
-  {"close_tty", 1, close_tty},
-  {"set_raw_tty_mode", 1, set_raw_tty_mode},
-  {"set_tty_speed", 3, set_tty_speed},
-  {"set_tty_flow", 2, set_tty_flow}
+  {"open-tty", 1, open_tty},
+  {"close-tty", 1, close_tty},
+  {"set-raw-tty-mode", 1, set_raw_tty_mode},
+  {"set-tty-speed", 3, set_tty_speed},
+  {"set-tty-flow", 2, set_tty_flow}
 };
 
 ERL_NIF_INIT(cereal, nif_funcs, &load, &reload, &upgrade, &unload);
