@@ -41,5 +41,8 @@
 (defun not-loaded (line)
   (exit `#(not-loaded (#(module ,(MODULE)) #(line ,line)))))
 
+(defun stop (pid)
+  (! pid #(stop)))
+
 (defun send (pid bytes)
   (! pid `#(send ,bytes)))
