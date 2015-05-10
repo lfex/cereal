@@ -16,18 +16,30 @@
 (defun close-tty (_)
   (not-loaded (LINE)))
 
-(defun test (device)
-  (let* ((`#(ok ,fd) (open-tty device))
-         ('ok (set-raw-tty-mode fd)))
-    (erlang:open_port `#(fd ,fd ,fd) '(binary stream))))
+(defun start (filename)
+  (start filename '()))
 
-(defun start ()
-  (init))
+(defun start (filename options)
+  (let ((pid (spawn_link 'cereal 'init `(,(self) ,filename))))
+    (process-options pid options)
+    pid))
 
-(defun init ()
-  "Note that because this function is loading a NIF, it cannot be called
-  from anywhere other than this module (thus the start function above)."
-  (erlang:load_nif (cereal-util:get-so-name) 0))
+(defun init (pid filename)
+  (let* (('ok (erlang:load_nif (cereal-util:get-so-name) 0))
+         (`#(ok ,fd) (open-tty filename))
+         ('ok (set-raw-tty-mode fd))
+         (port (erlang:open_port `#(fd ,fd ,fd) '(binary stream))))
+    (cereal-srv:run pid port)))
+
+(defun process-options
+  ((_ '())
+   'done)
+  ((pid (cons opt opts))
+   (! pid opt)
+   (process-options pid opts)))
 
 (defun not-loaded (line)
   (exit `#(not-loaded (#(module ,(MODULE)) #(line ,line)))))
+
+(defun send (pid bytes)
+  (! pid `#(send ,bytes)))

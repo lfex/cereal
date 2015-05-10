@@ -18,3 +18,12 @@
         (filename:join '(priv cereal)))))
     (dir
      (filename:join dir 'cereal))))
+
+(defun convert-speed (int)
+  (convert-speed int int))
+
+(defun convert-speed (int-in int-out)
+  (list (integer_to_list int-in)
+        " "
+        (integer_to_list int-out)
+        0))
