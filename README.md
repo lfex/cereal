@@ -1,14 +1,20 @@
 # cereal
 
-An LFE NIF for serial port communications.
+*An LFE NIF for serial port communications*
 
-The LFE code in this app was converted from the Erlang code from which this repo was forked. It has since been updated with additional functions, so the APIs differ.
+<img src="resources/images/resources/images/johnny-automatic-cereal-box-and-milk-small.png />
+
+The LFE code in this app was converted from the Erlang code from which this
+repo was forked. It has since been updated with additional functions, so the
+APIs differ.
 
 The C used in this app was inspired by and in some cases
 copy/pasted from https://github.com/tonyg/erlang-serial
 
 ## license
 
+Copyright 2015, Duncan McGreggor <oubiwann@gmail.com>
+Copyright 2011, Michael Santos <michael.santos@gmail.com>
 Copyright 2011, Joe Williams <joe@joetify.com>
 
 Permission is hereby granted, free of charge, to any person
