@@ -2,7 +2,7 @@
 
 *An LFE NIF for serial port communications*
 
-<img src="resources/images/resources/images/johnny-automatic-cereal-box-and-milk-small.png />
+<img src="resources/images/johnny-automatic-cereal-box-and-milk-small.png /">
 
 The LFE code in this app was converted from the Erlang code from which this
 repo was forked. It has since been updated with additional functions, so the
