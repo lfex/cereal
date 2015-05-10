@@ -11,3 +11,5 @@ bin/expm
 *.dump
 .rebar
 logs/*
+*.sw[po]
+*.*~
