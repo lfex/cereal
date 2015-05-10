@@ -1,6 +1,6 @@
 {application, cereal, [
     {description, "NIF for serial comms"},
-    {vsn, "0.1"},
+    {vsn, "0.2"},
     {registered, []},
     {applications, [kernel, stdlib]},
     {env, []}
