@@ -26,7 +26,7 @@
      (port-cmd port `(,(cereal-const:close)))
      (erlang:port_close port)
      (erlang:unregister (cereal-const:server-name))
-     (! pid #(ok stopped)))
+     (! pid #(ok closed)))
     (`#(speed ,in-speed ,out-speed)
      (port-cmd port
                (list* (cereal-const:speed)
