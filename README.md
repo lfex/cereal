@@ -30,7 +30,7 @@ Now you can open a connection to the serial deivce of your choice:
 
 You may also pass options when starting a connection:
 ```cl
-> (cereal:start "/dev/tty.usbserial-DA01L2I5" `(#(speed 9600)))
+> (cereal:open "/dev/tty.usbserial-DA01L2I5" `(#(speed 9600)))
 <0.32.0>
 ```
 
@@ -48,8 +48,9 @@ Now you can use the library:
 #B(126 0 5 136 82 78 74 2 139)
 ```
 
-Responses are streamed without packet length information, so you will need
-to implement a protocol that allows you to define the end of a packet.
+Responses are streamed without packet length information and you may not
+receive all the data initially. As such, you will need
+to implement a protocol that identifies the end of a packet.
 
 ```
 
