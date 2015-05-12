@@ -58,6 +58,39 @@
     (`#(ok ,options) options)
     (x `#(error ,x))))
 
+(defun get-filename ()
+  (get-filename (whereis (cereal-const:server-name))))
+
+(defun get-filename (pid)
+  (logjam:debug (MODULE) 'get-options/1 "Getting filename ...")
+  (cereal-util:flush)
+  (! pid #(filename))
+  (receive
+    (`#(ok ,filename) filename)
+    (x `#(error ,x))))
+
+(defun get-fd ()
+  (get-fd (whereis (cereal-const:server-name))))
+
+(defun get-fd (pid)
+  (logjam:debug (MODULE) 'get-fd "Getting file descriptor ...")
+  (cereal-util:flush)
+  (! pid #(fd))
+  (receive
+    (`#(ok ,fd) fd)
+    (x `#(error ,x))))
+
+(defun get-port ()
+  (get-port (whereis (cereal-const:server-name))))
+
+(defun get-port (pid)
+  (logjam:debug (MODULE) 'get-port "Getting port reference ...")
+  (cereal-util:flush)
+  (! pid #(port))
+  (receive
+    (`#(ok ,port) port)
+    (x `#(error ,x))))
+
 (defun get-state ()
   (get-state (whereis (cereal-const:server-name))))
 
