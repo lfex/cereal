@@ -18,7 +18,7 @@ To use ``cereal``, the first thing you need to do is start it:
 
 ```cl
 > (cereal:start)
-ok
+#(ok started)
 ```
 
 Now you can open a connection to the serial deivce of your choice:
