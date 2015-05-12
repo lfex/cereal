@@ -56,5 +56,5 @@ When you're finished, be sure to close the cereal connection:
 
 ```cl
 > (cereal:close)
-#(ok stopped)
+#(ok closed)
 ```
