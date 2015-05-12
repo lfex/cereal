@@ -52,6 +52,10 @@
     (#(info)
      (! pid `#(data ,(erlang:port_info port)))
      (run pid fd port))
+    ;; XXX is there a better way to flush than this?
+    (#(flush)
+      (cereal:close-tty fd)
+      (cereal:open filename options))
     (`#(EXIT ,port ,why)
      (logjam:error (MODULE) 'run/2 "Exited with reason: ~p~n" `(,why))
      (exit why))

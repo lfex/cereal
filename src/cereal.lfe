@@ -50,6 +50,9 @@
     (`#(data ,data) data)
     (x `#(error ,x))))
 
+(defun flush ()
+  (flush (whereis (cereal-const:server-name))))
+
 (defun flush (pid)
   (logjam:debug (MODULE) 'flush/1 "Preparing to close cereal connection ...")
   (! pid #(flush))
