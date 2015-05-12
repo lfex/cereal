@@ -27,3 +27,22 @@
         " "
         (integer_to_list int-out)
         0))
+
+(defun not-loaded (module line)
+  (exit `#(not-loaded (#(module ,module)
+                       #(line ,line)))))
+
+(defun process-options
+  (('())
+   (logjam:debug (MODULE)
+                 'process-options/1
+                 "Finished procssing options.")
+   'done)
+  ((`(,opt . ,opts))
+   (logjam:debug (MODULE)
+                 'process-options/1
+                 "Processing option ~p ..."
+                 `(,opt))
+   (cereal:call-srv opt)
+   (process-options opts)))
+

@@ -10,6 +10,7 @@ ebin/*
 bin/expm
 *.dump
 .rebar
+log/*
 logs/*
 *.sw[po]
 *.*~

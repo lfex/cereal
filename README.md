@@ -1,6 +1,6 @@
 # cereal
 
-*An LFE NIF for serial port communications*
+*An LFE NIF and get_server for serial communications*
 
 <img src="resources/images/johnny-automatic-cereal-box-and-milk-small.png" />
 

@@ -1,7 +1,9 @@
 {application, cereal, [
-    {description, "NIF for serial comms"},
-    {vsn, "0.1"},
-    {registered, []},
+    {description, "An LFE NIF and get_server for serial communications"},
+    {vsn, "0.3"},
+    {modules, [cereal, 'cereal-sup']},
+    {registered, ['cereal-sup']},
     {applications, [kernel, stdlib]},
+    {mod, {cereal, []}},
     {env, []}
 ]}.
