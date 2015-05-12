@@ -1,6 +1,7 @@
 (defmodule cereal
   (export all))
 
+(include-lib "cereal/include/records.lfe")
 
 ;;; Start-up functions
 
@@ -16,7 +17,9 @@
   (let* ((`#(ok ,fd) (open-tty filename))
          ('ok (set-raw-tty-mode fd))
          (port (erlang:open_port `#(fd ,fd ,fd) '(binary stream))))
-    (cereal-srv:run pid fd port)))
+    (cereal-srv:run pid (make-state filename filename
+                                    fd fd
+                                    port port))))
 
 ;;; API
 

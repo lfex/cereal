@@ -1,5 +1,5 @@
 (defrecord state
   filename
-  options
+  (options '())
   fd
   port)
