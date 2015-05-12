@@ -16,7 +16,7 @@
   (let* ((`#(ok ,fd) (open-tty filename))
          ('ok (set-raw-tty-mode fd))
          (port (erlang:open_port `#(fd ,fd ,fd) '(binary stream))))
-    (cereal-srv:run pid port)))
+    (cereal-srv:run pid fd port)))
 
 ;;; API
 
@@ -27,7 +27,9 @@
   (let ((pid (spawn_link 'cereal 'run `(,(self) ,filename))))
     (erlang:register (cereal-const:server-name) pid)
     (cereal-util:process-options pid options)
-    pid))
+    (case (is_pid pid)
+      ('true #(ok opened))
+      (_ `#(error ,pid)))))
 
 (defun send (bytes)
   (send (whereis (cereal-const:server-name)) bytes))
@@ -48,12 +50,17 @@
     (`#(data ,data) data)
     (x `#(error ,x))))
 
-(defun close ()
-  (close (cereal-const:server-name)))
+(defun flush (pid)
+  (logjam:debug (MODULE) 'flush/1 "Preparing to close cereal connection ...")
+  (! pid #(flush))
+  #(ok flushed))
 
-(defun close (name)
+(defun close ()
+  (close (whereis (cereal-const:server-name))))
+
+(defun close (pid)
   (logjam:debug (MODULE) 'close/1 "Preparing to close cereal connection ...")
-  (! (whereis name) #(close))
+  (! pid #(close))
   (receive
     (x
      (logjam:debug (MODULE) 'close/1 "Got ~p" `(,x))
