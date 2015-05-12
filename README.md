@@ -14,17 +14,23 @@ copy/pasted from https://github.com/tonyg/erlang-serial
 
 # Usage
 
-To use ``cereal``, you start a connection to the serial device by passing
-the full path to the device name:
+To use ``cereal``, the first thing you need to do is start it:
 
 ```cl
-> (set tty (cereal:start "/dev/tty.usbserial-DA01L2I5"))
+> (cereal:start)
+ok
+```
+
+Now you can open a connection to the serial deivce of your choice:
+
+```cl
+> (cereal:open "/dev/tty.usbserial-DA01L2I5")
 <0.32.0>
 ```
 
 You may also pass options when starting a connection:
 ```cl
-> (set tty (cereal:start "/dev/tty.usbserial-DA01L2I5" `(#(speed 9600))))
+> (cereal:start "/dev/tty.usbserial-DA01L2I5" `(#(speed 9600)))
 <0.32.0>
 ```
 
@@ -38,21 +44,18 @@ Valid options are:
 Now you can use the library:
 
 ```cl
-> (cereal:send tty (binary #x7e #x00 #x04 #x08 #x52 #x4e #x4a #x0d))
-#(send #B(126 0 4 8 82 78 74 13))
+> (cereal:send (binary #x7e #x00 #x04 #x08 #x52 #x4e #x4a #x0d))
+#B(126 0 5 136 82 78 74 2 139)
 ```
 
-Then you can check for a response:
+Responses are streamed without packet length information, so you will need
+to implement a protocol that allows you to define the end of a packet.
 
-```cl
-> (c:flush)
-Shell got {data,<<136,82,78,74,2,139>>}
-ok
 ```
 
-When you're finished, be sure to stop cereal (in order to prevent memory leaks):
+When you're finished, be sure to close the cereal connection:
 
 ```cl
-> (cereal:stop tty)
-#(stop)
+> (cereal:close)
+#(ok stopped)
 ```
