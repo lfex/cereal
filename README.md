@@ -31,7 +31,7 @@ Now you can open a connection to the serial deivce of your choice:
 You may also pass options when opening a connection:
 ```cl
 > (cereal:open "/dev/tty.usbserial-DA01L2I5" `(#(speed 9600)))
-<0.32.0>
+#(ok opened)
 ```
 
 Valid options are:
