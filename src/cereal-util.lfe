@@ -1,6 +1,8 @@
 (defmodule cereal-util
   (export all))
 
+(include-lib "cereal/include/records.lfe")
+
 (defun get-version ()
   (lutil:get-app-version 'cereal))
 
@@ -37,3 +39,12 @@
   ((pid (cons opt opts))
    (! pid opt)
    (process-options pid opts)))
+
+(defun flush ()
+  (receive
+    (_ (flush))
+    (after 0 'ok)))
+
+(defun state->plist (rec-data)
+  (lists:zip (fields-state)
+             (cdr (tuple_to_list rec-data))))
