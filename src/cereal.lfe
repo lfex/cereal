@@ -35,7 +35,6 @@
   (logjam:debug (MODULE) 'send/2 "Sending bytes ~p ..." `(,bytes))
   (! pid `#(send ,bytes))
   (receive
-    (x (logjam:debug (MODULE) 'send/2 "Recieving data ~p ..." `(,x)) x)
     (`#(data ,bytes) bytes)
     (x `#(error ,x))))
 
@@ -49,13 +48,14 @@
     (x `#(error ,x))))
 
 (defun close ()
-  (close (whereis (cereal-const:server-name))))
+  (close (cereal-const:server-name)))
 
-(defun close (pid)
-  (! pid #(stop))
+(defun close (name)
+  (logjam:debug (MODULE) 'close/1 "Preparing to close cereal connection ...")
+  (! (whereis name) #(close))
   (receive
     (x
-     (erlang:unregister pid)
+     (logjam:debug (MODULE) 'close/1 "Got ~p" `(,x))
      x)))
 
 ;;; NIF API - don't use unless you really know what you're doing (use the API

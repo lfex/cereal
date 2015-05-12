@@ -18,9 +18,15 @@
     (`#(open ,tty)
      (port-cmd port `(,(cereal-const:open) ,tty))
      (run pid port))
-    (`#(close)
+    (#(close)
+     (logjam:debug (MODULE)
+                   'run/2
+                   "Preparing to deregister ~p ..."
+                   `(,(cereal-const:server-name)))
      (port-cmd port `(,(cereal-const:close)))
-     (run pid port))
+     (erlang:port_close port)
+     (erlang:unregister (cereal-const:server-name))
+     (! pid #(ok stopped)))
     (`#(speed ,in-speed ,out-speed)
      (port-cmd port
                (list* (cereal-const:speed)
@@ -42,10 +48,6 @@
     (#(break)
      (port-cmd port `(,(cereal-const:break)))
      (run pid port))
-    (#(stop)
-     (port-cmd port `(,(cereal-const:close)))
-     (erlang:port_close port)
-     #(ok cereal-stopped))
     (#(info)
      (! pid `#(data ,(erlang:port_info port)))
      (run pid port))
@@ -61,5 +63,5 @@
   (logjam:debug (MODULE)
                 'port-cmd/2
                 "Preparing to call port_command/2 with msg ~p to ~p ..."
-                `(,port ,data))
+                `(,data ,port))
   (erlang:port_command port data))
