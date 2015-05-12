@@ -52,8 +52,6 @@ Responses are streamed without packet length information and you may not
 receive all the data initially. As such, you will need
 to implement a protocol that identifies the end of a packet.
 
-```
-
 When you're finished, be sure to close the cereal connection:
 
 ```cl
