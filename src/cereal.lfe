@@ -58,6 +58,17 @@
     (`#(ok ,options) options)
     (x `#(error ,x))))
 
+(defun get-state ()
+  (get-state (whereis (cereal-const:server-name))))
+
+(defun get-state (pid)
+  (logjam:debug (MODULE) 'get-state/1 "Getting state ...")
+  (cereal-util:flush)
+  (! pid #(state))
+  (receive
+    (`#(ok ,state) (cereal-util:state->plist state))
+    (x `#(error ,x))))
+
 (defun send (bytes)
   (send (whereis (cereal-const:server-name)) bytes))
 

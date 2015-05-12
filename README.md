@@ -58,3 +58,39 @@ When you're finished, be sure to close the cereal connection:
 > (cereal:close)
 #(ok closed)
 ```
+## Utility API Calls
+
+Get the passed options:
+
+```cl
+> (cereal:get-options)
+(#(speed 9600))
+```
+
+Get the passed filename:
+
+```cl
+
+```
+
+Get the port reference for the serial driver:
+
+```cl
+
+```
+
+Get the file descriptor for the open connection to the serial device:
+
+```cl
+
+```
+
+Get all state data:
+
+```cl
+> (cereal:get-state)
+(#(filename "/dev/ttys018")
+ #(options (#(speed 9600)))
+ #(fd 12)
+ #(port #Port<0.10319>))
+```
