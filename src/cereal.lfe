@@ -9,7 +9,7 @@
 
 (defun init ()
   (let* (('ok (erlang:load_nif (cereal-util:get-so-name) 0)))
-    'ok))
+    #(ok started)))
 
 (defun run (pid filename)
   (let* ((`#(ok ,fd) (open-tty filename))
