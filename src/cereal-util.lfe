@@ -27,3 +27,13 @@
         " "
         (integer_to_list int-out)
         0))
+
+(defun not-loaded (module line)
+  (exit `#(not-loaded (#(module ,module) #(line ,line)))))
+
+(defun process-options
+  ((_ '())
+   'done)
+  ((pid (cons opt opts))
+   (! pid opt)
+   (process-options pid opts)))

@@ -1,48 +1,77 @@
 (defmodule cereal
   (export all))
 
-(defun set-raw-tty-mode (_)
-  (not-loaded (LINE)))
 
-(defun set-tty-speed (_ _ _)
-  (not-loaded (LINE)))
+;;; Start-up functions
 
-(defun set-tty-flow (_ _)
-  (not-loaded (LINE)))
+(defun start ()
+  (init))
 
-(defun open-tty (_)
-  (not-loaded (LINE)))
+(defun init ()
+  (let* (('ok (erlang:load_nif (cereal-util:get-so-name) 0)))
+    'ok))
 
-(defun close-tty (_)
-  (not-loaded (LINE)))
-
-(defun start (filename)
-  (start filename '()))
-
-(defun start (filename options)
-  (let ((pid (spawn_link 'cereal 'init `(,(self) ,filename))))
-    (process-options pid options)
-    pid))
-
-(defun init (pid filename)
-  (let* (('ok (erlang:load_nif (cereal-util:get-so-name) 0))
-         (`#(ok ,fd) (open-tty filename))
+(defun run (pid filename)
+  (let* ((`#(ok ,fd) (open-tty filename))
          ('ok (set-raw-tty-mode fd))
          (port (erlang:open_port `#(fd ,fd ,fd) '(binary stream))))
     (cereal-srv:run pid port)))
 
-(defun process-options
-  ((_ '())
-   'done)
-  ((pid (cons opt opts))
-   (! pid opt)
-   (process-options pid opts)))
+;;; API
 
-(defun not-loaded (line)
-  (exit `#(not-loaded (#(module ,(MODULE)) #(line ,line)))))
+(defun open (filename)
+  (open filename '()))
 
-(defun stop (pid)
-  (! pid #(stop)))
+(defun open (filename options)
+  (let ((pid (spawn_link 'cereal 'run `(,(self) ,filename))))
+    (erlang:register (cereal-const:server-name) pid)
+    (cereal-util:process-options pid options)
+    pid))
+
+(defun send (bytes)
+  (send (whereis (cereal-const:server-name)) bytes))
 
 (defun send (pid bytes)
-  (! pid `#(send ,bytes)))
+  (logjam:debug (MODULE) 'send/2 "Sending bytes ~p ..." `(,bytes))
+  (! pid `#(send ,bytes))
+  (receive
+    (x (logjam:debug (MODULE) 'send/2 "Recieving data ~p ..." `(,x)) x)
+    (`#(data ,bytes) bytes)
+    (x `#(error ,x))))
+
+(defun info ()
+  (info (whereis (cereal-const:server-name))))
+
+(defun info (pid)
+  (! pid #(info))
+  (receive
+    (`#(data ,data) data)
+    (x `#(error ,x))))
+
+(defun close ()
+  (close (whereis (cereal-const:server-name))))
+
+(defun close (pid)
+  (! pid #(stop))
+  (receive
+    (x
+     (erlang:unregister pid)
+     x)))
+
+;;; NIF API - don't use unless you really know what you're doing (use the API
+;;;           instead)
+
+(defun set-raw-tty-mode (_)
+  (cereal-util:not-loaded (MODULE) (LINE)))
+
+(defun set-tty-speed (_ _ _)
+  (cereal-util:not-loaded (MODULE) (LINE)))
+
+(defun set-tty-flow (_ _)
+  (cereal-util:not-loaded (MODULE) (LINE)))
+
+(defun open-tty (_)
+  (cereal-util:not-loaded (MODULE) (LINE)))
+
+(defun close-tty (_)
+  (cereal-util:not-loaded (MODULE) (LINE)))
