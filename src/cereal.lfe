@@ -8,6 +8,7 @@
   (init))
 
 (defun init ()
+  (logjam:start)
   (let* (('ok (erlang:load_nif (cereal-util:get-so-name) 0)))
     #(ok started)))
 
