@@ -37,3 +37,8 @@
   ((pid (cons opt opts))
    (! pid opt)
    (process-options pid opts)))
+
+(defun flush ()
+  (receive
+    (_ (flush))
+    (after 0 'ok)))

@@ -29,10 +29,34 @@
 (defun open (filename options)
   (let ((pid (spawn_link 'cereal 'run `(,(self) ,filename))))
     (erlang:register (cereal-const:server-name) pid)
-    (cereal-util:process-options pid options)
+    ;;(cereal-util:process-options pid options)
+    (set-options options)
     (case (is_pid pid)
       ('true #(ok opened))
       (_ `#(error ,pid)))))
+
+(defun set-options (options)
+  (set-options (whereis (cereal-const:server-name)) options))
+
+(defun set-options (pid options)
+   (logjam:debug (MODULE) 'set-options/2 "Setting options ~p ..." `(,options))
+   (! pid `#(set-options ,options))
+   (receive
+     (#(ok options-set)
+       (cereal-util:flush)
+       options)
+     (x `#(error ,x))))
+
+(defun get-options ()
+  (get-options (whereis (cereal-const:server-name))))
+
+(defun get-options (pid)
+  (logjam:debug (MODULE) 'get-options/1 "Getting options ...")
+  (cereal-util:flush)
+  (! pid #(options))
+  (receive
+    (`#(ok ,options) options)
+    (x `#(error ,x))))
 
 (defun send (bytes)
   (send (whereis (cereal-const:server-name)) bytes))
