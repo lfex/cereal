@@ -40,10 +40,10 @@
 
 (defun set-options (pid options)
    (logjam:debug (MODULE) 'set-options/2 "Setting options ~p ..." `(,options))
+   (cereal-util:flush)
    (! pid `#(set-options ,options))
    (receive
      (#(ok options-set)
-       (cereal-util:flush)
        options)
      (x `#(error ,x))))
 
@@ -107,6 +107,7 @@
 
 (defun send (pid bytes)
   (logjam:debug (MODULE) 'send/2 "Sending bytes ~p ..." `(,bytes))
+  (cereal-util:flush)
   (! pid `#(send ,bytes))
   (receive
     (`#(data ,bytes) bytes)
@@ -116,6 +117,7 @@
   (info (whereis (cereal-const:server-name))))
 
 (defun info (pid)
+  (cereal-util:flush)
   (! pid #(info))
   (receive
     (`#(data ,data) data)
@@ -131,6 +133,7 @@
 
 (defun close (pid)
   (logjam:debug (MODULE) 'close/1 "Preparing to close cereal connection ...")
+  (cereal-util:flush)
   (! pid #(close))
   (receive
     (x
