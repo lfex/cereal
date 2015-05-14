@@ -10,16 +10,29 @@
 
 (defun init ()
   (logjam:start)
-  (let* (('ok (erlang:load_nif (cereal-util:get-so-name) 0)))
-    #(ok started)))
+  (case (erlang:load_nif (cereal-util:get-so-name) 0)
+    ('ok #(ok started))
+    (_
+      (logjam:error (MODULE) 'init/0 "Couldn't load NIF.")
+      #(error "Couldn't load NIF."))))
 
 (defun run (pid filename)
-  (let* ((`#(ok ,fd) (open-tty filename))
-         ('ok (set-raw-tty-mode fd))
-         (port (erlang:open_port `#(fd ,fd ,fd) '(binary stream))))
-    (cereal-srv:run pid (make-state filename filename
-                                    fd fd
-                                    port port))))
+  (case (open-tty filename)
+    (`#(ok ,fd)
+      (cereal-srv:run
+        pid
+        (make-state filename filename
+                    fd fd
+                    port (open-port fd))))
+    ((= `#(error ,_) err) err)))
+
+(defun open-port (fd)
+  (case (set-raw-tty-mode fd)
+    ('ok
+      (erlang:open_port `#(fd ,fd ,fd) '(binary stream)))
+    (_
+      (logjam:error (MODULE) 'open-port/1 "Cound't set TTY to raw mode.")
+      #(error "Cound't set TTY to raw mode."))))
 
 ;;; API
 
@@ -28,11 +41,12 @@
 
 (defun open (filename options)
   (let ((pid (spawn_link 'cereal 'run `(,(self) ,filename))))
+    (logjam:debug (MODULE) 'open/2 "Got pid ~p." `(,pid))
     (erlang:register (cereal-const:server-name) pid)
-    ;;(cereal-util:process-options pid options)
-    (set-options options)
     (case (is_pid pid)
-      ('true #(ok opened))
+      ('true
+        (set-options options)
+        #(ok opened))
       (_ `#(error ,pid)))))
 
 (defun set-options (options)
@@ -115,11 +129,14 @@
 (defun info ()
   (info (whereis (cereal-const:server-name))))
 
-(defun info (pid)
-  (! pid #(info))
-  (receive
-    (`#(data ,data) data)
-    (x `#(error ,x))))
+(defun info
+  (('undefined)
+   #(error "No opened serial device."))
+  ((pid)
+   (! pid #(info))
+   (receive
+     (`#(data ,data) data)
+     (x `#(error ,x)))))
 
 (defun flush (pid)
   (logjam:debug (MODULE) 'flush/1 "Preparing to close cereal connection ...")

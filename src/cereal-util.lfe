@@ -31,7 +31,9 @@
         0))
 
 (defun not-loaded (module line)
-  (exit `#(not-loaded (#(module ,module) #(line ,line)))))
+  (logjam:error "NIF not loaded.")
+  (logjam:debug "Call made from module ~p, line ~p." `(,module ,line))
+  #(error "NIF has not been loaded"))
 
 (defun process-options
   ((_ '())
